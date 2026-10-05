@@ -11,6 +11,8 @@ This project is the code companion to **[TypeScript Ladders](https://ts-ladders.
 You need Node 22 or newer.
 
 ```bash
+git clone https://github.com/kapunahelewong/ts-ladders-demo.git
+cd ts-ladders-demo
 npm install
 npm start
 ```
@@ -91,6 +93,10 @@ Each of these touches a different part of the code, so pick the one that matches
 | `npm start` | Builds the project and starts the game. |
 | `npm run check` | Checks the types and writes nothing. |
 | `npm run build` | Writes the compiled JavaScript to `dist/`. |
+
+## License
+
+[BSD Zero Clause License (0BSD)](LICENSE). This is about as free as a license gets: use, copy, change, and share the code for any purpose, with no need to credit anyone.
 
 ## About this project
 

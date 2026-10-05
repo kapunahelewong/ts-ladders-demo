@@ -2,6 +2,8 @@
   "name": "cave-of-types",
   "version": "1.0.0",
   "private": true,
+  "license": "0BSD",
+  "repository": "github:kapunahelewong/ts-ladders-demo",
   "description": "A tiny terminal adventure that shows the TypeScript patterns taught in TypeScript Ladders.",
   "type": "module",
   "scripts": {
