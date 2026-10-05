@@ -1,0 +1,16 @@
+{
+  "name": "cave-of-types",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A tiny terminal adventure that shows the TypeScript patterns taught in TypeScript Ladders.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/main.js",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "24.5.2",
+    "typescript": "5.9.2"
+  }
+}

@@ -1,0 +1,4 @@
+node_modules/
+dist/
+savegame.json
+.DS_Store
