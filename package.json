@@ -4,7 +4,7 @@
   "private": true,
   "license": "0BSD",
   "repository": "github:kapunahelewong/ts-ladders-demo",
-  "description": "A tiny terminal adventure that shows the TypeScript patterns taught in TypeScript Ladders.",
+  "description": "A terminal adventure that demonstrates the TypeScript patterns taught in TypeScript Ladders: Foundations.",
   "type": "module",
   "scripts": {
     "build": "tsc",

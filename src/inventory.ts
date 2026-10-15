@@ -3,22 +3,24 @@
 // This file shows:
 //   - a class with a type parameter
 //   - a constraint on the type parameter
-//   - Map, which returns undefined for a missing key
+//   - `Map`, whose `get` method returns `undefined` for a missing key
 //
 // Ladder: Generics
 //   https://ts-ladders.netlify.app/ladders/generics/
 
-// `Inventory<T>` is a class with a PLACEHOLDER type T, written in angle
-// brackets. Whoever uses the class chooses T:
+// `Inventory<T>` is a class with a type parameter `T`, written in angle
+// brackets. The code that uses the class chooses `T`:
 //
 //   new Inventory<Item>()      an inventory of items
-//   new Inventory<Monster>()   an inventory of monsters (no code change)
+//   new Inventory<Monster>()   an inventory of monsters, with no change to the class
 //
-// The CONSTRAINT `extends { readonly id: string }` means T can be any type that
-// has a string `id`. That is what lets the methods below use `item.id`.
+// The constraint `extends { readonly id: string }` means that `T` can be any
+// type that has a `string` member named `id`. The constraint is what allows the
+// methods below to use `item.id`.
 // https://ts-ladders.netlify.app/ladders/generics/#step-1
 export class Inventory<T extends { readonly id: string }> {
-  // A Map from id to item. Its type uses T, so it follows whatever T is.
+  // A `Map` from an id to an item. The type of the `Map` uses `T`, so the type
+  // changes with `T`.
   private readonly items = new Map<string, T>();
 
   add(item: T): void {
@@ -29,15 +31,15 @@ export class Inventory<T extends { readonly id: string }> {
     return this.items.has(id);
   }
 
-  // Map.get returns `T | undefined`, because the key may not be there.
-  // This method keeps that honest in its own return type.
+  // `Map.get` returns `T | undefined`, because the key may not be in the `Map`.
+  // `remove` returns the same type, so a caller handles the missing case.
   remove(id: string): T | undefined {
     const item = this.items.get(id);
     this.items.delete(id);
     return item;
   }
 
-  // The spread `[...]` turns the Map's values into an ordinary array.
+  // The spread syntax `[...]` copies the values of the `Map` into an array.
   list(): T[] {
     return [...this.items.values()];
   }

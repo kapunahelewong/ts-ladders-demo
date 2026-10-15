@@ -1,50 +1,54 @@
 {
   // This file tells the TypeScript compiler how to check and build the project.
-  // Every option below has a comment that says what it does.
+  // Every option below has a comment that states what the option does.
   // Learn more: https://ts-ladders.netlify.app/ladders/project-setup/
   "compilerOptions": {
-    // strict switches on a group of checks at once: no implicit any, null checks,
-    // and more. Start every project with it on.
+    // `strict` turns on a group of checks at once, including `noImplicitAny` and
+    // `strictNullChecks`. Start every project with it on.
     // https://ts-ladders.netlify.app/ladders/project-setup/#step-2
     "strict": true,
 
-    // Not part of strict. With this on, reading list[0] or table[key] gives
-    // "the item or undefined", because the item might not be there.
+    // This option is not part of `strict`. With it on, reading `list[0]` or
+    // `table[key]` gives the item type or `undefined`, because the item can be
+    // missing.
     "noUncheckedIndexedAccess": true,
 
-    // A subclass has to write the word override when it replaces a method.
-    // A typo in the method name becomes an error and not a silent new method.
+    // A subclass has to write the word `override` when it replaces a method. A
+    // typo in the method name is then an error. Without the option, a typo
+    // creates a new method.
     "noImplicitOverride": true,
 
-    // target is the version of JavaScript that the compiler writes.
-    // lib is the set of built-in types TypeScript knows about.
+    // `target` is the version of JavaScript that the compiler writes.
+    // `lib` is the set of built-in types that TypeScript knows about.
     // There is no DOM here because this is a terminal program.
     // https://ts-ladders.netlify.app/ladders/project-setup/#step-3
     "target": "ES2022",
     "lib": ["ES2022"],
 
-    // module is the import syntax in the output. moduleResolution is how
-    // TypeScript finds the file that an import points at. NodeNext follows the
-    // rules of Node itself, which is why imports in this project end in .js
-    // even though the files are .ts.
+    // `module` is the import syntax in the output. `moduleResolution` is how
+    // TypeScript finds the file that an import points at. `NodeNext` follows the
+    // rules of Node, which is why imports in this project end in `.js`, although
+    // the files are `.ts`.
     // https://ts-ladders.netlify.app/ladders/project-setup/#step-4
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
 
-    // Types are removed before the program runs. This option makes that visible:
-    // an import that is only a type has to be written as "import type".
+    // Types are removed before the program runs. This option makes the removal
+    // visible: an import that is only a type has to be written with `import type`.
     // https://ts-ladders.netlify.app/ladders/declarations/#step-5
     "verbatimModuleSyntax": true,
 
-    // Load the types for Node's built-in modules (fs, readline, process).
+    // Load the types for the built-in modules of Node, such as `fs`, `readline`,
+    // and `process`.
     "types": ["node"],
 
-    // Where the files go, and where the source files are.
+    // `rootDir` is where the source files are, and `outDir` is where the compiled
+    // files go.
     "rootDir": "src",
     "outDir": "dist",
 
-    // Skip checking the .d.ts files inside node_modules. Faster, and those
-    // files are not ours to fix.
+    // Skip checking the `.d.ts` files inside `node_modules`. This makes the
+    // compiler faster, and the project cannot change those files.
     "skipLibCheck": true
   },
 

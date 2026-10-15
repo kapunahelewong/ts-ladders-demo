@@ -1,10 +1,10 @@
 // GAME: the state of the game and what each command does.
 //
 // This file shows:
-//   - a switch over a discriminated union, with an exhaustiveness check
+//   - a `switch` over a discriminated union, with an exhaustiveness check
 //   - function overloads
 //   - `undefined` handling: `=== undefined`, `?.`, and `??`
-//   - Partial and Pick in use (PlayerUpdate)
+//   - `Partial` and `Pick` in use, in `PlayerUpdate`
 //
 // Ladder: Unions and narrowing, Functions, Null and undefined
 //   https://ts-ladders.netlify.app/ladders/unions/#step-4
@@ -26,14 +26,15 @@ import { createWorld, itemCatalog } from './world.js';
 export type GameState = {
   player: Player;
   rooms: Record<RoomId, Room>;
-  // Maps a room to the monster in it. Defeated monsters are deleted.
+  // Maps a room to the monster in it. A defeated monster is deleted from the map.
   monsters: Map<RoomId, Monster>;
-  // A generic class from inventory.ts, with T set to Item.
+  // A generic class from `inventory.ts`, with `T` set to `Item`.
   inventory: Inventory<Item>;
   difficulty: Difficulty;
 };
 
-// What a command produces. Another discriminated union: `kind` says which.
+// What a command produces. This is a second discriminated union, and `kind` tells
+// the members apart.
 export type Outcome =
   | { kind: 'message'; text: string }
   | { kind: 'won'; text: string }
@@ -42,8 +43,8 @@ export type Outcome =
 
 const say = (text: string): Outcome => ({ kind: 'message', text });
 
-// A default parameter: `difficulty` is Normal when the caller leaves it out.
-// The type (Difficulty) is worked out from the default value.
+// A default parameter: `difficulty` is `Difficulty.Normal` when the caller leaves
+// it out. TypeScript infers the type, `Difficulty`, from the default value.
 export function newGame(name: string, difficulty = Difficulty.Normal): GameState {
   return {
     player: { name, health: 10, room: 'entrance' },
@@ -58,13 +59,14 @@ export function newGame(name: string, difficulty = Difficulty.Normal): GameState
   };
 }
 
-// Rebuilds a game from checked save data (see save.ts for the checking).
+// Rebuilds a game from save data that has been checked. `save.ts` does the
+// checking.
 function restoreGame(data: SaveData): GameState {
   const state = newGame(data.player.name);
   state.player = { ...data.player };
 
   for (const id of data.carrying) {
-    // `id` is an ItemId, so this lookup cannot miss.
+    // `id` has the type `ItemId`, so this lookup always finds an item.
     state.inventory.add(itemCatalog[id]);
     // The item is in the player's hands now, so remove it from every room.
     for (const room of Object.values(state.rooms)) {
@@ -77,40 +79,40 @@ function restoreGame(data: SaveData): GameState {
   return state;
 }
 
-// PARTIAL UPDATE: the parameter type is `PlayerUpdate`, which is
-// `{ health?: number; room?: RoomId }`. A caller passes only what changed.
-// Object.assign copies the given members onto the player.
+// A partial update. The parameter type is `PlayerUpdate`, which is
+// `{ health?: number; room?: RoomId }`, so a caller passes only the members that
+// changed. `Object.assign` copies the given members onto the player.
 function updatePlayer(player: Player, update: PlayerUpdate): void {
   Object.assign(player, update);
 }
 
 function currentRoom(state: GameState): Room {
-  // Indexing a Record with a union of its own keys always finds something, so
-  // the result is a Room and not `Room | undefined`.
+  // Indexing a `Record` with a union of its own keys always finds a value, so the
+  // result has the type `Room`. The type is not `Room | undefined`.
   return state.rooms[state.player.room];
 }
 
-// FUNCTION OVERLOADS. Two signatures are written first, and ONE implementation
-// follows. Callers see only the first two:
+// Function overloads. Two signatures are written first, and one implementation
+// follows. Callers see only the first two signatures:
 //
 //   lookup(state, 'monster')        returns Monster | undefined
 //   lookup(state, 'item', 'lamp')   returns Item | undefined
 //
-// The result type depends on the first argument, which a single signature with
-// unions could not say. The implementation signature (the third) is not
-// callable from outside.
+// The result type depends on the first argument. A single signature that uses
+// unions cannot state that relationship. The implementation signature, which is
+// the third, cannot be called from outside.
 // https://ts-ladders.netlify.app/ladders/functions/#step-7
 function lookup(state: GameState, kind: 'monster'): Monster | undefined;
 function lookup(state: GameState, kind: 'item', name: string): Item | undefined;
 function lookup(state: GameState, kind: 'monster' | 'item', name?: string): Monster | Item | undefined {
   if (kind === 'monster') {
-    // Optional chaining: `?.` reads a member only when the value is not
-    // undefined, and gives undefined otherwise.
+    // Optional chaining: `?.` reads a member when the value is not `undefined`, and
+    // gives `undefined` otherwise.
     // https://ts-ladders.netlify.app/ladders/nullability/#step-4
     const monster = state.monsters.get(state.player.room);
     return monster?.isAlive ? monster : undefined;
   }
-  // `name ?? ''` uses the empty string when `name` is undefined.
+  // `name ?? ''` uses the empty string when `name` is `undefined`.
   // https://ts-ladders.netlify.app/ladders/nullability/#step-5
   return findByName(currentRoom(state).items, name ?? '');
 }
@@ -121,13 +123,14 @@ function describeRoom(state: GameState): string {
 
   const monster = lookup(state, 'monster');
   if (monster !== undefined) {
-    // Inside this `if`, `monster` is a Monster, not `Monster | undefined`.
+    // Inside this `if`, `monster` has the type `Monster`. Outside it, the type is
+    // `Monster | undefined`.
     lines.push(monster.describe(), monster.roar());
   }
   if (room.items.length > 0) {
     lines.push(`You see: ${room.items.map((item) => item.name).join(', ')}.`);
   }
-  // Object.keys gives the directions that have an exit.
+  // `Object.keys` gives the directions that have an exit.
   lines.push(`Exits: ${Object.keys(room.exits).join(', ')}.`);
   return lines.join('\n');
 }
@@ -138,7 +141,7 @@ function go(state: GameState, direction: Direction): Outcome {
     return say(`The ${monster.name} blocks your way. Try: attack`);
   }
 
-  // `exits` is a Partial Record, so the result may be undefined.
+  // `exits` is a `Partial` `Record`, so the result can be `undefined`.
   const nextId = currentRoom(state).exits[direction];
   if (nextId === undefined) {
     return say('You cannot go that way.');
@@ -203,16 +206,17 @@ const HELP = [
   '  quit              leave the cave',
 ].join('\n');
 
-// THE EXHAUSTIVE SWITCH.
+// The exhaustive `switch`.
 //
-// Each `case` handles one member of the Command union. Inside a case, TypeScript
-// knows exactly which member it has, so `command.direction` is available in the
-// 'go' case and nowhere else.
+// Each `case` handles one member of the `Command` union. Inside a `case`,
+// TypeScript knows which member `command` is, so `command.direction` is
+// available in the `'go'` case and in no other case.
 //
-// The `default` branch is the CHECK. When every member has a case, `command` has
-// been narrowed to `never` by the time it reaches default, and assertNever
-// accepts it. Add a new kind to Command without a case and `command` is no longer
-// `never` here, so this line becomes a compile error that names the missing kind.
+// The `default` branch is the check. When every member has a `case`, `command` is
+// narrowed to `never` by the time it reaches `default`, and `assertNever`
+// accepts it. If a new kind is added to `Command` without a `case`, `command` is
+// no longer `never` here, and the line is a compile error that names the missing
+// kind.
 // https://ts-ladders.netlify.app/ladders/unions/#step-4
 export function applyCommand(state: GameState, command: Command): Outcome {
   switch (command.kind) {
@@ -235,8 +239,8 @@ export function applyCommand(state: GameState, command: Command): Outcome {
       return say('Game saved.');
     case 'load': {
       const result = readSave();
-      // Checking `result.ok` narrows the union: in the true branch `data`
-      // exists, and in the false branch `reason` exists.
+      // Checking `result.ok` narrows the union. In the `true` branch `data`
+      // exists, and in the `false` branch `reason` exists.
       if (!result.ok) {
         return say(result.reason);
       }

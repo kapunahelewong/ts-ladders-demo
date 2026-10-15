@@ -1,10 +1,10 @@
 # Cave of Types
 
-A tiny text adventure that you play in the terminal, and a guided tour of TypeScript while you read it.
+A text adventure that you play in the terminal, and a guided tour of TypeScript while you read it.
 
-You walk through four rooms, pick up a lamp, a sword and a key, beat three monsters, and take a crown from a vault. The game is small on purpose. Every file is short, and every file is full of comments that explain what each piece of TypeScript is doing and why.
+You walk through four rooms, pick up a lamp, a sword, and a key, beat three monsters, and take a crown from a vault. This is a small game that demonstrates TypeScript features. Every file is short, and every file has comments that explain what each piece of TypeScript does and why.
 
-This project is the code companion to **[TypeScript Ladders](https://ts-ladders.netlify.app/)**. Each comment in the code links to the card that teaches that pattern, so you can read the code, then open the card, or the other way around.
+This project is the code companion to **[TypeScript Ladders: Foundations](https://ts-ladders.netlify.app/)**. Each comment in the code links to the card that teaches that pattern, so you can read the code, then open the card, or the other way around.
 
 ## Play it
 
@@ -67,14 +67,14 @@ Read the files in this order. Each one adds a few ideas, and each one is under 1
 
 ## Break it on purpose
 
-The best way to learn what the compiler does is to make it complain. Run `npm run check` after each change. It checks the types and writes no files.
+Changing the code on purpose shows what the compiler checks. Run `npm run check` after each change. The command checks the types and writes no files.
 
 1. **Add a command.** In `src/commands.ts`, add `| { kind: 'dance' }` to `Command`. Do not change anything else. The error appears in `src/game.ts`, on the `assertNever` line, and the message names the missing kind. That is the exhaustiveness check from [Unions, step 4](https://ts-ladders.netlify.app/ladders/unions/#step-4). Fix it by adding a `case 'dance'`.
 2. **Add a room.** Add `'cellar'` to `RoomId` in `src/types.ts`. The error appears in `src/world.ts`, because `roomTemplates` has to list every room.
 3. **Add a direction.** Add `Up: 'up'` to the `Direction` object. The error appears in `opposite`, which has to list every direction.
 4. **Forget `override`.** Delete the word `override` in front of `roar()` in `SkeletonKing`. The compiler reports it, because `roar` replaces a method that `Monster` already has and `noImplicitOverride` is on.
-5. **Break the save file.** Run the game, type `save`, and edit `savegame.json` so that `health` is a string. Type `load` and watch the type guards refuse the file instead of loading bad data.
-6. **Skip a check.** In `src/save.ts`, delete the `if (!isSaveData(parsed))` block. The `return` line becomes an error, because `parsed` is `unknown` and not known to be a `SaveData`. Now change `const parsed: unknown` to `const parsed: any`. The error disappears and the program accepts any file. This is why the Ladders say to reach for `unknown` first.
+5. **Break the save file.** Run the game, type `save`, and edit `savegame.json` so that `health` is a string. Type `load`. The type guards reject the file, and the game prints a message and loads no data.
+6. **Skip a check.** In `src/save.ts`, delete the `if (!isSaveData(parsed))` block. The `return` line becomes an error, because `parsed` is `unknown` and not known to be a `SaveData`. Now change `const parsed: unknown` to `const parsed: any`. The error disappears and the program accepts any file. This is the reason that TypeScript Ladders recommends `unknown`.
 
 ## Ideas to extend it
 
@@ -96,7 +96,7 @@ Each of these touches a different part of the code, so pick the one that matches
 
 ## License
 
-[BSD Zero Clause License (0BSD)](LICENSE). This is about as free as a license gets: use, copy, change, and share the code for any purpose, with no need to credit anyone.
+[BSD Zero Clause License (0BSD)](LICENSE). The license allows anyone to use, copy, change, and share the code for any purpose, with no need to credit anyone.
 
 ## About this project
 
