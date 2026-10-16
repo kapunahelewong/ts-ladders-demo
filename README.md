@@ -69,6 +69,8 @@ Read the files in this order. Each one adds a few ideas, and each one is under 1
 
 Changing the code on purpose shows what the compiler checks. Run `npm run check` after each change. The command checks the types and writes no files.
 
+In VS Code, open the `ts-ladders-demo` folder itself (File, then Open Folder), so that VS Code finds `tsconfig.json`. VS Code reports errors in the files that are open, and several of the changes below cause an error in a different file from the one that is edited. The file `.vscode/settings.json` turns on errors for the whole project in the Problems panel, which is View, then Problems. Each change below names the file that shows the error.
+
 1. **Add a command.** In `src/commands.ts`, add `| { kind: 'dance' }` to `Command`. Do not change anything else. The error appears in `src/game.ts`, on the `assertNever` line, and the message names the missing kind. That is the exhaustiveness check from [Unions, step 4](https://ts-ladders.netlify.app/ladders/unions/#step-4). Fix it by adding a `case 'dance'`.
 2. **Add a room.** Add `'cellar'` to `RoomId` in `src/types.ts`. The error appears in `src/world.ts`, because `roomTemplates` has to list every room.
 3. **Add a direction.** Add `Up: 'up'` to the `Direction` object. The error appears in `opposite`, which has to list every direction.

@@ -1,0 +1,6 @@
+{
+  // Report errors for every file in the project in the Problems panel, and not
+  // only for the files that are open. Several of the changes in the README cause
+  // an error in a different file from the one that is edited.
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true
+}
